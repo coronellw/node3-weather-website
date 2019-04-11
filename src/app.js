@@ -1,3 +1,4 @@
+const hbs = require('hbs');
 const path = require('path');
 const chalk = require('chalk');
 const express = require('express');
@@ -6,14 +7,63 @@ const port = process.env.port || 3000;
 const app = express();
 
 /**
- * Directories
+ * Directories for express config
  */
 const publicDirectoryPath = path.join(__dirname, '../public');
+const viewsPath = path.join(__dirname, '../templates/views');
+const partialsPath = path.join(__dirname, '../templates/partials');
 
+/**
+ * Setup Handlebars engine and views location
+ */
+app.set('view engine', 'hbs');
+app.set('views', viewsPath);
+hbs.registerPartials(partialsPath);
+
+// Setup static direcotry
 app.use(express.static(publicDirectoryPath));
 
+app.get('/', (req, res) => {
+  res.render('index', {
+    title: 'Weather',
+    name: 'Wiston Coronell'
+  });
+});
+
+app.get('/about', (req, res) => {
+  res.render('about', {
+    title: 'About me',
+    name: 'Wiston Coronell'
+  });
+});
+
+app.get('/help', (req, res) => {
+  res.render('help', {
+    msg: 'This is a test message',
+    title: 'Help',
+    name: 'Wiston Coronell'
+  });
+});
+
 app.get('/weather', (req, res) => {
-  res.send({forecast: 'warm', temperature: 52, location: 'Bogota'});
+  res.send({ forecast: 'warm', temperature: 52, location: 'Bogota' });
+});
+
+app.get('/help/:topic', (req, res) => {
+  res.render('404',{
+    title: '404',
+    errorMsg: 'Help article not found',
+    topic: req.params.topic,
+    name: 'Wiston Coronell'
+  });
+});
+
+app.get('*', (req, res) => {
+  res.render('404',{
+    title: '404',
+    errorMsg: 'Page not found',
+    name: 'Wiston Coronell'
+  });
 });
 
 app.listen(port, () => {
