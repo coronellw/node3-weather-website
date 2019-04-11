@@ -1,22 +1,19 @@
-const express = require('express');
+const path = require('path');
 const chalk = require('chalk');
+const express = require('express');
 const port = process.env.port || 3000;
+
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello Express!');
-});
+/**
+ * Directories
+ */
+const publicDirectoryPath = path.join(__dirname, '../public');
 
-app.get('/help', (req, res) => {
-  res.send('This is the help page!  ');
-})
-
-app.get('/about', (req, res) => {
-  res.send('This is the about page!  ');
-});
+app.use(express.static(publicDirectoryPath));
 
 app.get('/weather', (req, res) => {
-  res.send('Your weather!  ');
+  res.send({forecast: 'warm', temperature: 52, location: 'Bogota'});
 });
 
 app.listen(port, () => {
