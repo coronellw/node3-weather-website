@@ -2,6 +2,8 @@ const hbs = require('hbs');
 const path = require('path');
 const chalk = require('chalk');
 const express = require('express');
+const geocode = require('./utils/geocode');
+const forecast = require('./utils/forecast');
 const port = process.env.port || 3000;
 
 const app = express();
@@ -46,11 +48,38 @@ app.get('/help', (req, res) => {
 });
 
 app.get('/weather', (req, res) => {
-  res.send({ forecast: 'warm', temperature: 52, location: 'Bogota' });
+  if (!req.query.address) {
+    return res.send({ error: 'You must provide an address' })
+  }
+
+  geocode(req.query.address, (err, { lat, lng, location } = {}) => {
+    if (err) return res.send({ error: err });
+
+    forecast(lat, lng, (err, { forecast }) => {
+      if (err) return res.send({ error: err });
+
+      return res.send({
+        forecast,
+        location,
+        address: req.query.address
+      })
+    })
+  });
 });
 
+app.get('/products', (req, res) => {
+  if (!req.query.search) {
+    return res.send({
+      error: 'You must provide a search term'
+    })
+  }
+  res.send({
+    products: []
+  })
+})
+
 app.get('/help/:topic', (req, res) => {
-  res.render('404',{
+  res.render('404', {
     title: '404',
     errorMsg: 'Help article not found',
     topic: req.params.topic,
@@ -59,7 +88,7 @@ app.get('/help/:topic', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.render('404',{
+  res.render('404', {
     title: '404',
     errorMsg: 'Page not found',
     name: 'Wiston Coronell'

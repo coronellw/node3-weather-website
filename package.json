@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/app -e js,hbs"
+    "start": "nodemon src/app -e js,hbs,css"
   },
   "keywords": [],
   "author": "",
@@ -12,8 +12,9 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "express": "^4.16.4",
-    "hbs": "^4.0.3",
+    "hbs": "^4.0.4",
     "kexec": "^3.0.0",
+    "request": "^2.88.0",
     "unsplash-js": "^5.0.0"
   }
 }
