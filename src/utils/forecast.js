@@ -9,9 +9,9 @@ const forecast = (lat, lng, callback, opts = { units: 'si', lang: 'en' }) => {
       callback(body.error);
     } else {
       const { temperature, precipProbability, precipType } = body.currently;
-      const daySummary = body.daily.data[0].summary;
-      const forecast = `${daySummary} It is currently ${temperature} Celcius out. There is a ${precipProbability}% chance of ${precipType || 'rain'}`;
-      callback(undefined, { temperature, precipProbability, precipType, daySummary, forecast });
+      const {summary: daySummary, temperatureHigh, temperatureLow} = body.daily.data[0];
+      const forecast = `${daySummary} It is currently ${temperature} Celcius out. There is a ${precipProbability}% chance of ${precipType || 'rain'}. Min: ${temperatureLow} and Max: ${temperatureHigh}`;
+      callback(undefined, { temperature, precipProbability, precipType, daySummary, forecast, temperatureHigh, temperatureLow });
     }
   })
 }
